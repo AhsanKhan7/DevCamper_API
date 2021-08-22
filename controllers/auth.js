@@ -26,7 +26,6 @@ exports.login = asyncHandler(async (req, res, next) => {
   const { email, password } = req.body;
 
   // Validate email and password
-
   if (!email || !password) {
     return next(new ErrorResponse(`Please provide an email and password`, 400));
   }
@@ -46,6 +45,18 @@ exports.login = asyncHandler(async (req, res, next) => {
   }
 
   sendTokenResponse(user, 200, res);
+});
+
+// @desc    Logout user / clear cookie
+// @route   GET /api/vi/auth/logout
+// @access  Private
+exports.logout = asyncHandler(async (req, res, next) => {
+  res.cookie("token", "none", {
+    expires: new Date(Date.now() + 10 * 1000),
+    httpOnly: true,
+  });
+
+  res.status(200).json({ success: true, data: {} });
 });
 
 // Get token from model, create cookie and send response
